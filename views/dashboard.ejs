@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+
+    <!-- Lien CDN Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <!-- Lien fichier CSS personnalisé -->
+    <link rel="stylesheet" href="/admin_style.css">
+</head>
+<body>
+    
+    <%- include('layout/headeradmin') %>
+
+    <div id="menu-btn" class="fas fa-bars"></div>
+
+    <!-- Section Tableau de bord commence -->
+    <section class="dashboard">
+        <h1 class="heading">Tableau de bord</h1>
+        <div class="box-container">
+            <div class="box">
+                <h3>Bienvenue !</h3>
+                <p>Vous êtes connecté en tant qu'administrateur.</p>
+                <a href="/update" class="btn">Mettre à jour le profil</a>
+            </div>
+            <div class="box">
+                <h3>Nombre d'annonces</h3>
+                <p><%= totalAnnonces %> propriétés publiées.</p>
+                <a href="/annonces" class="btn">Voir les annonces</a>
+            </div>
+            <div class="box">
+                <h3>Utilisateurs</h3>
+                <p><%= totalUsers %> utilisateurs inscrits.</p>
+                <a href="/users" class="btn">Voir les utilisateurs</a>
+            </div>
+            <div class="box">
+                <h3>Administrateurs</h3>
+                <p><%= totalAdmins %> administrateurs.</p>
+                <a href="/admins" class="btn">Voir les administrateurs</a>
+            </div>
+        </div>
+    </section>
+    <!-- Section Tableau de bord se termine -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script>
+        let header = document.querySelector('.header');
+
+        document.querySelector('#menu-btn').onclick = () => {
+            header.classList.add('active');
+        }
+
+        document.querySelector('#close-btn').onclick = () => {
+            header.classList.remove('active');
+        }
+
+        window.onscroll = () => {
+            header.classList.remove('active');
+        }
+
+        document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+            inputNumber.oninput = () => {
+                if (inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+            }
+        });
+    </script>
+
+</body>
+</html>

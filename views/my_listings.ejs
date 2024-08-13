@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Mes annonces</title>
+   <link rel="website icon" type="png" href="/images/infinite logo.png">
+
+   <!-- Font Awesome CDN link -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+   <!-- Custom CSS file link -->
+   <link rel="stylesheet" href="/style1.css">
+</head>
+<body>
+   <%- include('layout/header') %>
+<section class="my-listings">
+
+   <h1 class="heading">Mes annonces</h1>
+
+   <div class="box-container">
+      <% if (annonces.length > 0) { %>
+         <% annonces.forEach(annonce => { %>
+            <form action="/delete-annonce" method="POST" class="box">
+               <input type="hidden" name="property_id" value="<%= annonce._id %>">
+               <div class="thumb">
+                  <p><i class="far fa-image"></i><span><%= annonce.images.length %></span></p> 
+                  <% if (annonce.images.length > 0) { %>
+                     <img src="/uploads/<%= annonce.images[0] %>" alt="<%= annonce.nomPropriete %>">
+                  <% } else { %>
+                     <img src="/images/default.png" alt="Default image">
+                  <% } %>
+               </div>
+               <div class="price"><i class="fas fa-sack-dollar"></i><span><%= annonce.prix %></span></div>
+               <h3 class="name"><%= annonce.nomPropriete %></h3>
+               <!-- Commented out the location section as requested -->
+               <!-- <p class="location"><i class="fas fa-map-marker-alt"></i><span>Latitude: <%= annonce.localisation.latitude %>, Longitude: <%= annonce.localisation.longitude %></span></p> -->
+               <div class="flex-btn">
+                  <a href="/update-property/<%= annonce._id %>" class="btn">Mis à jour</a>
+                  <input type="submit" name="delete" value="Supprimer" class="btn" onclick="return confirm('Supprimer cette annonce ?');">
+               </div>
+               <a href="/annonce_details/<%= annonce._id %>" class="btn">Voir la propriété</a>
+            </form>
+         <% }) %>
+      <% } else { %>
+         <p class="empty">Aucune propriété ajoutée pour l'instant ! <a href="/post-property" style="margin-top:1.5rem;" class="btn">Ajouter un nouveau</a></p>
+      <% } %>
+   </div>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script>
+   let menu = document.querySelector('.header .menu');
+
+   document.querySelector('#menu-btn').onclick = () =>{
+      menu.classList.toggle('active');
+   }
+
+   window.onscroll = () =>{
+      menu.classList.remove('active');
+   }
+
+   document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+      inputNumber.oninput = () =>{
+         if(inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+      };
+   });
+
+   document.querySelectorAll('.faq .box-container .box h3').forEach(headings =>{
+      headings.onclick = () =>{
+         headings.parentElement.classList.toggle('active');
+      }
+   });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Utilisateurs</title>
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+   <link rel="stylesheet" href="/admin_style.css">
+</head>
+<body>
+   
+   <%- include('layout/headeradmin') %>
+
+<section class="grid">
+
+   <h1 class="heading">Utilisateurs</h1>
+
+   <!-- Formulaire de recherche -->
+   <form class="search-form">
+      <input type="text" id="search_box" name="search_box" placeholder="Rechercher les utilisateurs..." maxlength="100" required>
+   </form>
+
+   <!-- Liste des utilisateurs -->
+   <div class="box-container" id="user-list">
+      <% users.forEach(user => { %>
+         <div class="box">
+            <p>Nom : <span><%= user.nom %></span></p>
+            <p>Numéro : <a href="tel:<%= user.telephone %>"><%= user.telephone %></a></p>
+            <p>Email : <a href="mailto:<%= user.email %>"><%= user.email %></a></p>
+            <p>Biens listés : <span><%= user.listedProperties ? user.listedProperties.length : 0 %></span></p>
+            <form action="" method="POST">
+               <input type="hidden" name="delete_id" value="<%= user._id %>">
+               <input type="submit" value="Supprimer l'utilisateur" onclick="return confirm('Supprimer cet utilisateur ?');" name="delete" class="delete-btn">
+            </form>
+         </div>
+      <% }) %>
+   </div>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script>
+document.getElementById('search_box').addEventListener('input', function() {
+   const searchTerm = this.value; // Récupère le terme de recherche
+
+   // Effectue une requête GET vers la route /users avec le terme de recherche
+   fetch(`/users?search_box=${encodeURIComponent(searchTerm)}`)
+      .then(response => response.text())
+      .then(html => {
+         // Parse l'HTML reçu et met à jour la liste des utilisateurs
+         const parser = new DOMParser();
+         const doc = parser.parseFromString(html, 'text/html');
+         const newUserList = doc.querySelector('#user-list');
+         document.querySelector('#user-list').innerHTML = newUserList.innerHTML;
+      })
+      .catch(error => {
+         console.error('Erreur lors de la recherche:', error);
+      });
+});
+
+// Scripts pour gérer le menu
+let header = document.querySelector('.header');
+
+document.querySelector('#menu-btn').onclick = () => {
+   header.classList.add('active');
+}
+
+document.querySelector('#close-btn').onclick = () => {
+   header.classList.remove('active');
+}
+
+window.onscroll = () => {
+   header.classList.remove('active');
+}
+
+document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+   inputNumber.oninput = () => {
+      if(inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+   }
+});
+</script>
+
+</body>
+</html>

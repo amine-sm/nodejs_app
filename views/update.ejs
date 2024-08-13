@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Mise à jour</title>
+   <link rel="icon" type="image/png" href="/images/infinite_logo.png">
+
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="/style1.css">
+
+</head>
+<body>
+   
+   <section class="form-container update">
+      <form action="/update" method="post">
+         <h3>Mettre à jour votre compte!</h3>
+         <input type="text" name="name" maxlength="50" placeholder="Nom d'utilisateur" class="box update" value="<%= user.nom %>">
+         <input type="text" name="prenom" maxlength="50" placeholder="Nom d'utilisateur" class="box update" value="<%= user.prenom %>">
+         <input type="email" name="email" maxlength="50" placeholder="Email" class="box update" value="<%= user.email %>">
+         <input type="tel" name="number" min="0" max="9999999999" maxlength="10" placeholder="Numéro de téléphone" class="box update" value="<%= user.telephone %>">
+         <input type="password" name="old_pass" maxlength="20" placeholder="Entrez votre ancien mot de passe" class="box update">
+         <input type="password" name="new_pass" maxlength="20" placeholder="Entrez votre nouveau mot de passe" class="box update">
+         <input type="password" name="c_pass" maxlength="20" placeholder="Confirmez votre nouveau mot de passe" class="box update">
+         <input type="submit" value="Mettez à jour maintenant" name="submit" class="btn">
+      </form>
+   </section>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+   <script>
+      let menu = document.querySelector('.header .menu');
+
+      document.querySelector('#menu-btn').onclick = () =>{
+         menu.classList.toggle('active');
+      }
+
+      window.onscroll = () =>{
+         menu.classList.remove('active');
+      }
+
+      document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+         inputNumber.oninput = () =>{
+            if(inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+         };
+      });
+
+      document.querySelectorAll('.faq .box-container .box h3').forEach(headings =>{
+         headings.onclick = () =>{
+            headings.parentElement.classList.toggle('active');
+         }
+      });
+   </script>
+
+</body>
+</html>

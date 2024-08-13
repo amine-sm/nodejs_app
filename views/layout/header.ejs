@@ -1,0 +1,56 @@
+<header class="header">
+    <nav class="navbar nav-1">
+        <section class="flex">
+            <a href="/" class="logo"><img src="/images/453962591_1554104691808331_2489621151592389822_n-removebg-preview.png" alt="Logo"/></a>
+            <ul>
+                <% if (user && user.isAdmin) { %>
+                    <li><a href="/ajouter-annonce">Publier une propriété <i class="fas fa-paper-plane"></i></a></li>
+                <% } %>
+            </ul>
+        </section>
+    </nav>
+    <nav class="navbar nav-2">
+        <section class="flex">
+            <div id="menu-btn" class="fas fa-bars"></div>
+            <div class="menu">
+                <ul>
+                    <% if (user && user.isAdmin) { %>
+                        <li><a href="#">Mes annonces <i class="fas fa-angle-down"></i></a>
+                            <ul>
+                                <li><a href="/dashboard">Tableau de bord</a></li>
+                                <li><a href="/ajouter-annonce">Publier une propriété</a></li>
+                                <li><a href="/my_listings">Mes annonces</a></li>
+                            </ul>
+                        </li>
+                    <% } %>
+                    <li><a href="#">Options <i class="fas fa-angle-down"></i></a>
+                        <ul>
+                            <li><a href="/search">Filtrer la recherche</a></li>
+                            <li><a href="/listings">Tous les listings</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Aide <i class="fas fa-angle-down"></i></a>
+                        <ul>
+                            <li><a href="/about">À propos de nous</a></li>
+                            <li><a href="/contact">Contactez-nous</a></li>
+                            <li><a href="/contact#faq">FAQ</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ul>
+                <li><a href="/saved">Enregistré <i class="far fa-heart"></i></a></li>
+                <li><a href="#">Compte <i class="fas fa-angle-down"></i></a>
+                    <ul>
+                        <% if (user) { %>
+                            <li><a href="/update">Mettre à jour le profil</a></li>
+                            <li><a href="/logout" onclick="return confirm('Vous déconnecter de ce site ?');">Déconnecter</a></li>
+                        <% } else { %>
+                            <li><a href="/auth?form=login">Connectez-vous</a></li>
+                        <% } %>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </nav>
+</header>

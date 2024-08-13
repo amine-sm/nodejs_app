@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="website icon" type="png" href="images/infinite logo.png">
+    <!-- Font Awesome CDN Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- Custom CSS File Link -->
+    <link rel="stylesheet" href="/style1.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+</head>
+<body>
+    <% if (user) { %>
+        <div class="welcome-message">
+            <h2>
+                <% if (user.isAdmin) { %>
+                    Bonjour Admin!
+                <% } else { %>
+                    Bonjour <%= user.prenom %> <%= user.nom %>!
+                <% } %>
+            </h2>
+        </div>
+    <% } %>
+
+    <%- include('layout/header') %>
+    <section class="property-form">
+        <form action="/ajouter-annonce" method="POST" enctype="multipart/form-data">
+            <h3>Détails de la propriété</h3>
+            <div class="box">
+                <p>Nom de la propriété <span>*</span></p>
+                <input type="text" name="nomPropriete" required maxlength="50" placeholder="Entrez le nom de la propriété" class="input">
+            </div>
+            <div class="box">
+                <p>Description de la propriété <span>*</span></p>
+                <textarea name="description" maxlength="1000" class="input" required cols="30" rows="10" placeholder="Écrire sur la propriété..."></textarea>
+            </div>
+            <div class="flex">
+                <div class="box">
+                    <p>Prix de l'immobilier <span>*</span></p>
+                    <input type="text" name="prix" required  placeholder="Saisir le prix de la propriété" class="input">
+                </div>
+                <div class="box">
+                    <p>Superficie <span>*</span></p>
+                    <input type="number" name="superficie" required min="1" max="9999999999" maxlength="10" placeholder="Combien de mètres carrés ?" class="input">
+                </div>
+                <div class="box">
+                    <p>Nombre de chambres <span>*</span></p>
+                    <select name="nombreChambres" required class="input">
+                        <option value="0">0 chambre</option>
+                        <option value="1">1 chambre</option>
+                        <option value="2">2 chambres</option>
+                        <option value="3">3 chambres</option>
+                        <option value="4">4 chambres</option>
+                        <option value="5">5 chambres</option>
+                        <option value="6">6 chambres</option>
+                        <option value="7">7 chambres</option>
+                        <option value="8">8 chambres</option>
+                        <option value="9">9 chambres</option>
+                    </select>
+                </div>
+                <div class="box">
+                    <p>Type de propriété <span>*</span></p>
+                    <select name="typePropriete" required class="input">
+                        <option value="appartement">Appartement</option>
+                        <option value="maison">Maison</option>
+                        <option value="villa">Villa</option>
+                        <option value="studio">Studio</option>
+                        <option value="bureau">Bureau</option>
+                        <option value="commerce">Commerce</option>
+                        <option value="terrain">Terrain</option>
+                    </select>
+                </div>
+                <div class="box">
+                    <p>État de la propriété <span>*</span></p>
+                    <select name="etatPropriete" required class="input">
+                        <option value="neuf">Neuf</option>
+                        <option value="excellent">Excellent</option>
+                        <option value="bon">Bon</option>
+                        <option value="à rénover">À rénover</option>
+                    </select>
+                </div>
+            </div>
+            <div id="info"><strong>Cliquez sur la carte pour localiser votre propriété.</strong></div>
+            <div id="mymap"></div>
+            <div hidden class="info">Latitude: <input class="Latitude" name="latitude" type="text" readonly></div>
+            <div hidden class="info">Longitude: <input class="Longitude" name="longitude" type="text" readonly></div>
+            <br><br><br>
+            <div class="box">
+                <p>Images de la propriété</p>
+                <input type="file" name="images" class="input" accept="image/*" multiple>
+            </div>
+        
+            <input type="submit" value="Publier une propriété" class="btn" name="post">
+        </form>
+    </section>
+    
+    
+    <!-- Custom JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var carte = L.map('mymap').setView([35.6971, -0.6308], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            minZoom: 7,
+            maxZoom: 20
+        }).addTo(carte);
+
+        var customIcon = L.icon({
+            iconUrl: 'images/step-3.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+
+        var marker;
+
+        function onMapClick(e) {
+            var latlng = e.latlng;
+            var infoDiv = document.getElementById('info');
+            infoDiv.innerHTML = "<strong>Merci pour votre référence!... </strong>";
+
+            document.querySelector('.Latitude').value = latlng.lat;
+            document.querySelector('.Longitude').value = latlng.lng;
+
+            if (marker) {
+                carte.removeLayer(marker);
+            }
+
+            marker = L.marker([latlng.lat, latlng.lng], { icon: customIcon }).addTo(carte)
+                .bindPopup("Emplacement choisi:<br> Latitude: " + latlng.lat + "<br> Longitude: " + latlng.lng)
+                .openPopup();
+        }
+
+        carte.on('click', onMapClick);
+    </script>
+</body>
+</html>

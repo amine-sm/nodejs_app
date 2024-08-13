@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= annonce.nomPropriete %></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        img {
+            max-width: 150px;
+            max-height: 150px;
+            margin-right: 10px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= annonce.nomPropriete %></h1>
+        <p><%= annonce.description %></p>
+        <p>Prix: <%= annonce.prix %> €</p>
+        <p>Superficie: <%= annonce.superficie %> m²</p>
+        <p>Nombre de chambres: <%= annonce.nombreChambres %></p>
+        <p>Type de propriété: <%= annonce.typePropriete %></p>
+        <p>État de la propriété: <%= annonce.etatPropriete %></p>
+      
+        
+        <% if (annonce.images.length > 0) { %>
+            <div>
+                <% annonce.images.forEach(image => { %>
+                    <img src="/uploads/<%= image %>" alt="Image de la propriété" />
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p>Aucune image disponible.</p>
+        <% } %>
+
+        <div id="map"></div>
+        
+        <p>Ajouté par: <%= annonce.agent.nom %> <%= annonce.agent.prenom %></p>
+        <a href="/annonces">Retour aux annonces</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialiser la carte
+        var map = L.map('map').setView([<%= annonce.localisation.latitude %>, <%= annonce.localisation.longitude %>], 13);
+
+        // Ajouter la couche de tuiles OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Ajouter un marqueur à la carte
+        L.marker([<%= annonce.localisation.latitude %>, <%= annonce.localisation.longitude %>])
+            .addTo(map)
+            .bindPopup('<b><%= annonce.nomPropriete %></b><br><%= annonce.description %>')
+            .openPopup();
+    </script>
+</body>
+</html>

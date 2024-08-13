@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="icon" type="image/png" href="/images/infinite logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="/style1.css">
+</head>
+<body>
+    <% if (user) { %>
+        <div class="welcome-message">
+            <h2>
+                <% if (user.isAdmin) { %>
+                    Bonjour Admin!
+                <% } else { %>
+                    Bonjour <%= user.prenom %> <%= user.nom %>!
+                <% } %>
+            </h2>
+        </div>
+    <% } %>
+
+    <%- include('layout/header') %>
+
+    <div class="home">
+        <section class="center">
+            <form action="/search" method="post">
+                <h3>Trouvez votre maison idéale</h3>
+                <div class="box">
+                    <p>Entrez l'emplacement <span>*</span></p>
+                    <input type="text" name="h_location" required maxlength="100" placeholder="Entrez le nom de la ville" class="input">
+                </div>
+                <div class="flex">
+                    <div class="box">
+                        <p>Type de propriété <span>*</span></p>
+                        <select name="h_type" class="input" required>
+                            <option value="flat">Terrain</option>
+                            <option value="house">Maison</option>
+                            <option value="shop">Boutique</option>
+                        </select>
+                    </div>
+                    <div class="box">
+                        <p>Type d'offre <span>*</span></p>
+                        <select name="h_offer" class="input" required>
+                            <option value="sale">Vente</option>
+                            <option value="resale">Revente</option>
+                            <option value="rent">Louer</option>
+                        </select>
+                    </div>
+                    <div class="box">
+                        <p>Budget maximum <span>*</span></p>
+                        <select name="h_max" class="input" required>
+                            <!-- Ajoutez les options ici -->
+                        </select>
+                    </div>
+                    <div class="box">
+                        <p>Budget minimum <span>*</span></p>
+                        <select name="h_min" class="input" required>
+                            <!-- Ajoutez les options ici -->
+                        </select>
+                    </div>
+                </div>
+                <input type="submit" value="Rechercher une propriété" name="h_search" class="btn">
+            </form>
+        </section>
+    </div>
+
+    <section class="services">
+
+        <h1 class="heading">Nos services</h1>
+     
+        <div class="box-container">
+     
+           <div class="box">
+              <img src="images/icon-1.png" alt="">
+              <h3>acheter une maison</h3>
+              <p>Explorez notre sélection de maisons à vendre dans des quartiers prisés et découvrez votre futur chez-vous</p>
+           </div>
+     
+           <div class="box">
+              <img src="images/icon-2.png" alt="">
+              <h3>louer maison</h3>
+              <p>Découvrez nos maisons disponibles à la location, offrant confort et commodités pour votre style de vie.</p>
+           </div>
+     
+           <div class="box">
+              <img src="images/icon-3.png" alt="">
+              <h3>vendre maison</h3>
+              <p>Confiez-nous la vente de votre maison pour une expérience professionnelle et efficace.</p>
+           </div>
+     
+           <div class="box">
+              <img src="images/icon-4.png" alt="">
+              <h3>appartements et immeubles</h3>
+              <p>Parcourez nos offres d'appartements et d'immeubles à vendre ou à louer, adaptés à vos besoins résidentiels ou d'investissement.</p>
+           </div>
+     
+           <div class="box">
+              <img src="images/icon-5.png" alt="">
+              <h3>Recherche de biens immobiliers personnalisée</h3>
+              <p>Découvrez votre maison parfaite avec notre service de recherche personnalisée, adapté à vos besoins et à votre style de vie.</p>
+           </div>
+     
+           <div class="box">
+              <img src="images/icon-6.png" alt="">
+              <h3>24/7 service</h3>
+              <p>Profitez de notre service clientèle disponible 24h/24 et 7j/7 pour répondre à vos besoins immobiliers à tout moment.</p>
+           </div>
+     
+        </div>
+     
+     </section>
+     <section class="listings">
+        <h1 class="heading">Dernières annonces</h1>
+        
+        <div class="box-container">
+            <% if (annonces.length > 0) { %>
+                <% annonces.forEach(annonce => { %>
+                    <form action="" method="POST">
+                        <div class="box">
+                            <input type="hidden" name="property_id" value="<%= annonce._id %>">
+                            <button type="submit" name="save" class="save">
+                                <i class="far fa-heart"></i>
+                                <span>Enregistré</span>
+                            </button>
+                            <div class="thumb">
+                                <p class="total-images">
+                                    <i class="far fa-image"></i>
+                                    <span><%= annonce.images.length %></span>
+                                </p>
+                                <img src="/uploads/<%= annonce.images[0] %>" alt="Image de la propriété">
+                            </div>
+                            <div class="admin">
+                            
+                                <div>
+                                 
+                                    <span> <%= annonce.dateDePublication.toLocaleDateString('fr-FR') %></p></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="price">
+                                <i class="fas fa-sack-dollar"></i>
+                                <span><%= annonce.prix %></span> DA
+                            </div>
+                            <h3 class="name"><%= annonce.nomPropriete %></h3>
+                            <p class="location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span><%= annonce.localisation.address %></span>
+                            </p>
+                            <div class="flex">
+                                <p><i class="fas fa-house"></i><span><%= annonce.typePropriete %></span></p>
+                                <p><i class="fas fa-tag"></i><span><%= annonce.etatPropriete %></span></p>
+                                <p><i class="fas fa-trowel"></i><span><%= annonce.description %></span></p>
+                                <p><i class="fas fa-maximize"></i><span><%= annonce.superficie %> m²</span></p>
+                            </div>
+                            <div class="flex-btn">
+                                <a href="/annonce_detail/<%= annonce._id %>" class="btn">Voir la propriété</a>
+                                <input type="submit" value="Envoyer une demande" name="send" class="btn">
+                            </div>
+                        </div>
+                    </form>
+                <% }) %>
+            <% } else { %>
+                <p class="empty">
+                    Aucune propriété ajoutée pour l'instant! 
+                    <a href="/post-property" style="margin-top:1.5rem;" class="btn">Ajouter un nouveau</a>
+                </p>
+            <% } %>
+        </div>
+    
+        <div style="margin-top: 2rem; text-align:center;">
+            <a href="/listings" class="inline-btn">Voir tout</a>
+        </div>
+    </section>
+    
+    <%- include('layout/footer') %>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

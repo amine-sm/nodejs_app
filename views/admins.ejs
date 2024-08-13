@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title><%= title %></title>
+
+   <!-- lien cdn font awesome -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+   <link rel="stylesheet" href="/admin_style.css">
+
+</head>
+<body>
+   
+    <%- include('layout/headeradmin') %>
+<section class="grid">
+
+   <h1 class="heading">Administrateurs</h1>
+
+   <form action="" method="POST" class="search-form">
+      <input type="text" name="search_box" placeholder="Rechercher les administrateurs..." maxlength="100" required>
+      <button type="submit" class="fas fa-search" name="search_btn"></button>
+   </form>
+
+   <div class="box-container">
+      <% admins.forEach(admin => { %>
+         <div class="box">
+            <p>Nom : <span><%= admin.nom %></span></p>
+            <a href="/update_admin/<%= admin._id %>" class="option-btn">Mettre à jour le compte</a>
+            <form action="/delete_admin" method="POST">
+               <input type="hidden" name="delete_id" value="<%= admin._id %>">
+               <input type="submit" value="Supprimer l'administrateur" onclick="return confirm('Supprimer cet administrateur ?');" name="delete" class="delete-btn">
+            </form>
+         </div>
+      <% }) %>
+   </div>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script>
+   let header = document.querySelector('.header');
+
+   document.querySelector('#menu-btn').onclick = () =>{
+      header.classList.add('active');
+   }
+
+   document.querySelector('#close-btn').onclick = () =>{
+      header.classList.remove('active');
+   }
+
+   window.onscroll = () =>{
+      header.classList.remove('active');
+   }
+
+   document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+      inputNumber.oninput = () =>{
+         if(inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+      }
+   });
+</script>
+
+</body>
+</html>

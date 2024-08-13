@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <!-- Formulaire de connexion -->
+                <form action="/login" method="POST" class="sign-in-form">
+                    <h2 class="title">Se connecter</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="email" placeholder="Email" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Mot de passe" required />
+                    </div>
+                    <% if (error && form === 'login') { %>
+                        <p class="error-message"><%= error %></p>
+                    <% } %>
+                    <input type="submit" value="Se connecter" class="btn solid" />
+                </form>
+
+                <!-- Formulaire d'inscription -->
+                <form action="/register" method="POST" enctype="multipart/form-data" class="sign-up-form">
+                    <h2 class="title">S'inscrire</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="nom" placeholder="Nom" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="prenom" placeholder="Prénom" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" placeholder="Email" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" name="telephone" placeholder="Téléphone" pattern="^\d{10}$" title="Veuillez entrer un numéro de téléphone valide à 10 chiffres" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-image"></i>
+                        <input type="file" name="image" accept="image/*" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Mot de passe" required />
+                    </div>
+                    <% if (error && form === 'register') { %>
+                        <p class="error-message"><%= error %></p>
+                    <% } %>
+                    <input type="submit" value="S'inscrire" class="btn solid" />
+                </form>
+            </div>
+        </div>
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>Nouveau ici?</h3>
+                    <p>Créez un compte maintenant!</p>
+                    <button class="btn transparent" id="sign-up-btn">S'inscrire</button>
+                </div>
+                <img src="/img/log.svg" class="image" alt="Log" />
+            </div>
+
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>Un de nous?</h3>
+                    <p>Se connecter maintenant!</p>
+                    <button class="btn transparent" id="sign-in-btn">Se connecter</button>
+                </div>
+                <img src="/img/register.svg" class="image" alt="Register" />
+            </div>
+        </div>
+    </div>
+    <script src="/app.js"></script>
+</body>
+</html>

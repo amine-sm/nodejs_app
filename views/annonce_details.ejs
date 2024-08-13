@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title><%= annonce.nomPropriete %></title>
+   <link rel="website icon" type="png" href="/images/infinite logo.png">
+
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+
+   <!-- Font Awesome CDN link -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+   <!-- Leaflet CSS -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+   <!-- Custom CSS file link -->
+   <link rel="stylesheet" href="/style1.css">
+</head>
+<body>
+   <% if (user) { %>
+        <div class="welcome-message">
+            <h2>
+                <% if (user.isAdmin) { %>
+                    Bonjour Admin!
+                <% } else { %>
+                    Bonjour <%= user.prenom %> <%= user.nom %>!
+                <% } %>
+            </h2>
+        </div>
+    <% } %>
+
+    <%- include('layout/header') %>
+<!-- view property section starts  -->
+<section class="view-property">
+   <h1 class="heading">Détails de la propriété</h1>
+
+   <div class="details">
+     <div class="swiper images-container">
+         <div class="swiper-wrapper">
+            <% annonce.images.forEach(image => { %>
+               <img src="/uploads/<%= image %>" alt="" class="swiper-slide">
+            <% }) %>
+         </div>
+         <div class="swiper-pagination"></div>
+     </div>
+      <h3 class="name"><%= annonce.nomPropriete %></h3>
+  
+      <div class="info">
+         <p><i class="fas fa-sack-dollar"></i><span><%= annonce.prix %></span></p>
+         <p><i class="fas fa-user"></i><span><%= annonce.agent.username %></span></p>
+         <p><i class="fas fa-phone"></i><a href="tel:<%= annonce.agent.phone %>"><%= annonce.agent.phone %></a></p>
+         <p><i class="fas fa-building"></i><span><%= annonce.typePropriete %></span></p>
+      </div>
+      <h3 class="title">Détails</h3>
+      <div class="flex">
+         <div class="box">
+            <p><i>Montant du dépôt :</i><span><span class="fas" style="margin-right: .5rem;"></span><%= annonce.depot %></span></p>
+            <p><i>Statut :</i><span><%= annonce.statut %></span></p>
+            <p><i>Chambre :</i><span><%= annonce.nombreChambres %></span></p>
+         </div>
+         <div class="box">
+            <p><i>Surface :</i><span><%= annonce.superficie %> m²</span></p>
+            <p><i>Meublé :</i><span><%= annonce.meuble ? 'Oui' : 'Non' %></span></p>
+            <p><i>Prêt :</i><span><%= annonce.pret %></span></p>
+         </div>
+      </div>
+
+      <h3 class="title">Description</h3>
+      <p class="description"><%= annonce.description %></p>
+
+      <!-- Conteneur de la carte Leaflet, déplacé en bas -->
+      <h3 class="title">Localisation en carte de la propriété</h3>
+      <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
+      
+      <form action="/save-property" method="post" class="flex-btn">
+         <input type="hidden" name="property_id" value="<%= annonce._id %>">
+         <button type="submit" name="save" class="save"><i class="fas fa-heart"></i><span>Enregistré</span></button>
+         <input type="submit" value="Envoyer une demande" name="send" class="btn">
+      </form>
+   </div>
+
+   <% if (!annonce) { %>
+      <p class="empty">Propriété introuvable ! <a href="/post-property" style="margin-top:1.5rem;" class="btn">Ajouter un nouveau</a></p>
+   <% } %>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+   let menu = document.querySelector('.header .menu');
+
+   document.querySelector('#menu-btn').onclick = () =>{
+      menu.classList.toggle('active');
+   }
+
+   window.onscroll = () =>{
+      menu.classList.remove('active');
+   }
+
+   document.querySelectorAll('input[type="number"]').forEach(inputNumber => {
+      inputNumber.oninput = () =>{
+         if(inputNumber.value.length > inputNumber.maxLength) inputNumber.value = inputNumber.value.slice(0, inputNumber.maxLength);
+      };
+   });
+
+   document.querySelectorAll('.faq .box-container .box h3').forEach(headings =>{
+      headings.onclick = () =>{
+         headings.parentElement.classList.toggle('active');
+      }
+   });
+
+   // Initialiser la carte Leaflet
+   var map = L.map('map').setView([<%= annonce.localisation.latitude %>, <%= annonce.localisation.longitude %>], 13);
+
+   // Ajouter une couche de carte
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   }).addTo(map);
+
+   // Ajouter un marqueur
+   L.marker([<%= annonce.localisation.latitude %>, <%= annonce.localisation.longitude %>]).addTo(map)
+       .bindPopup('<b><%= annonce.nomPropriete %></b><br /><%= annonce.localisation.address %>')
+       .openPopup();
+</script>
+
+<script>
+   var swiper = new Swiper(".images-container", {
+      effect: "coverflow",
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: "auto",
+      loop: true,
+      coverflowEffect: {
+         rotate: 0,
+         stretch: 0,
+         depth: 200,
+         modifier: 3,
+         slideShadows: true,
+      },
+      pagination: {
+         el: ".swiper-pagination",
+      },
+   });
+</script>
+
+</body>
+</html>
